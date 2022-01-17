@@ -40,6 +40,7 @@ dependencies:
   fluttertoast: ^8.0.8
   flutter_dotenv: ^5.0.2
   persistent_bottom_nav_bar: ^4.0.2
+  intl: ^0.17.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

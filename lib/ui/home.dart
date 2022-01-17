@@ -36,8 +36,8 @@ class HomePage extends HookConsumerWidget {
     }, const []);
 
     final addressView = Container(
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      padding: const EdgeInsets.all(0),
+      margin: const EdgeInsets.fromLTRB(10, 20, 10, 0),
       child: InkWell(
         child: Text(
           "アドレス: \n${state.address?.hex ?? ""}",
@@ -66,12 +66,12 @@ class HomePage extends HookConsumerWidget {
     final balanceView = Container(
       width: double.infinity,
       height: 100.0,
-      margin: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+      margin: const EdgeInsets.fromLTRB(10, 20, 10, 20),
       child: Card(
         color: ThemeData().navigationBarTheme.backgroundColor,
         child: Center(
           child: Text(
-            "${state.balance.getValueInUnit(EtherUnit.ether).toStringAsFixed(3)} ETH",
+            "${state.balance.getValueInUnit(EtherUnit.ether).toStringAsFixed(3)} Ether",
             style: const TextStyle(fontSize: 30),
           ),
         ),
@@ -80,7 +80,7 @@ class HomePage extends HookConsumerWidget {
 
     final createTransactionView = Container(
       width: double.infinity,
-      margin: const EdgeInsets.fromLTRB(20, 40, 20, 20),
+      margin: const EdgeInsets.fromLTRB(10, 40, 10, 20),
       child: Column(
         children: [
           Container(
@@ -93,7 +93,7 @@ class HomePage extends HookConsumerWidget {
           Container(
             margin: EdgeInsets.zero,
             child: TextFieldView(
-              label: "送金額（ETH）",
+              label: "送金額（Ether）",
               value: sendEth.value.toString(),
               inputType: TextInputType.number,
               onChange: (val) {
@@ -143,8 +143,17 @@ class HomePage extends HookConsumerWidget {
         ),
       ),
       body: WidgetHUD(
-          builder: (context) => ListView(
-                children: [addressView, balanceView, createTransactionView],
+          builder: (context) => RefreshIndicator(
+                child: ListView(
+                  children: [addressView, balanceView, createTransactionView],
+                ),
+                onRefresh: () async {
+                  final err = await action.refresh();
+                  if (err != null) {
+                    AppDialog().showErrorAlert(context, err);
+                    return;
+                  }
+                },
               ),
           showHUD: state.shouldShowHUD),
     );

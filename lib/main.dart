@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_ethereum_wallet/ui/root.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -11,6 +12,7 @@ const walletPrivateKey = "wallet-private-key";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initializeDateFormatting("ja_JP");
   await dotenv.load(fileName: ".env");
   await _initWallet();
 

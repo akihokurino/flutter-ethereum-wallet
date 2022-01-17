@@ -33,6 +33,22 @@ class _Provider extends StateNotifier<_State> {
     }
   }
 
+  Future<AppError?> refresh() async {
+    final prefs = await SharedPreferences.getInstance();
+    final rawPrivateKey = prefs.getString(walletPrivateKey) ?? "";
+    final credentials = EthPrivateKey.fromInt(BigInt.parse(rawPrivateKey));
+    final ethClient = Web3Client(networkUrl, Client());
+
+    final address = credentials.address;
+
+    try {
+      final balance = await ethClient.getBalance(address);
+      state = state.setBalance(balance);
+    } catch (e) {
+      return AppError("エラーが発生しました");
+    }
+  }
+
   Future<AppError?> sendTransaction(double eth, String to) async {
     if (eth <= 0.0 || to.isEmpty) {
       return AppError("入力が不正です");
@@ -51,8 +67,8 @@ class _Provider extends StateNotifier<_State> {
           Transaction(
               to: EthereumAddress.fromHex(to),
               value: EtherAmount.fromUnitAndValue(EtherUnit.wei, wei),
-              gasPrice: EtherAmount.fromUnitAndValue(EtherUnit.gwei, 50),
-              maxGas: 400000),
+              gasPrice: EtherAmount.fromUnitAndValue(EtherUnit.gwei, 100),
+              maxGas: 21000),
           chainId: int.parse(chainId));
       debugPrint(hash);
     } catch (e) {
