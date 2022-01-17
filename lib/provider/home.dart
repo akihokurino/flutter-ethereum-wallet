@@ -1,12 +1,14 @@
-import 'dart:isolate';
-
+import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_ethereum_wallet/main.dart';
+import 'package:flutter_ethereum_wallet/provider/error.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
 
-const network = "https://ropsten.infura.io/v3/0cdf45dd2e0b4a7e9ccc119ea926464f";
+final networkUrl = dotenv.env["NETWORK_URL"]!;
+final chainId = dotenv.env["CHAIN_ID"]!;
 
 class _Provider extends StateNotifier<_State> {
   _Provider() : super(_State.init());
@@ -15,22 +17,16 @@ class _Provider extends StateNotifier<_State> {
     final prefs = await SharedPreferences.getInstance();
     final rawPrivateKey = prefs.getString(walletPrivateKey) ?? "";
     final credentials = EthPrivateKey.fromInt(BigInt.parse(rawPrivateKey));
-    final ethClient = Web3Client(network, Client());
+    final ethClient = Web3Client(networkUrl, Client());
 
     final address = credentials.address;
     state = state.setAddress(address);
-
-    final hashList = prefs.getStringList(walletTransactionHashKey) ?? [];
-    for (String hash in hashList) {
-      print(hash);
-    }
 
     try {
       state = state.setShouldShowHUD(true);
       final balance = await ethClient.getBalance(address);
       state = state.setBalance(balance);
     } catch (e) {
-      print(e);
       return AppError("エラーが発生しました");
     } finally {
       state = state.setShouldShowHUD(false);
@@ -45,12 +41,11 @@ class _Provider extends StateNotifier<_State> {
     final prefs = await SharedPreferences.getInstance();
     final rawPrivateKey = prefs.getString(walletPrivateKey) ?? "";
     final credentials = EthPrivateKey.fromInt(BigInt.parse(rawPrivateKey));
-    final ethClient = Web3Client(network, Client());
+    final ethClient = Web3Client(networkUrl, Client());
     final wei = BigInt.from(eth * 1e+18);
 
     try {
       state = state.setShouldShowHUD(true);
-      final hashList = prefs.getStringList(walletTransactionHashKey) ?? [];
       final hash = await ethClient.sendTransaction(
           credentials,
           Transaction(
@@ -58,10 +53,8 @@ class _Provider extends StateNotifier<_State> {
               value: EtherAmount.fromUnitAndValue(EtherUnit.wei, wei),
               gasPrice: EtherAmount.fromUnitAndValue(EtherUnit.gwei, 50),
               maxGas: 400000),
-          chainId: 3);
-      print(hash);
-      hashList.add(hash);
-      prefs.setStringList(walletTransactionHashKey, hashList);
+          chainId: int.parse(chainId));
+      debugPrint(hash);
     } catch (e) {
       return AppError("エラーが発生しました");
     } finally {
@@ -100,8 +93,5 @@ class _State {
   }
 }
 
-final provider = StateNotifierProvider<_Provider, _State>((_) => _Provider());
-
-class AppError extends RemoteError {
-  AppError(String message) : super(message, "");
-}
+final homeProvider =
+    StateNotifierProvider<_Provider, _State>((_) => _Provider());
