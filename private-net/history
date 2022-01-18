@@ -20,3 +20,5 @@ eth.getTransaction("0x94aa17bb15a0b6adccbbabb7f2dc1a3f6b06b76d8a2bc2cc8187ce9e29
 eth.getTransaction("0xaa436aa5fce4fc57459d927f053ce53d68e45076921f3587f98a94a416340d33")
 miner.start(1)
 eth.getTransaction("0xaa436aa5fce4fc57459d927f053ce53d68e45076921f3587f98a94a416340d33")
+eth.accounts
+miner.start(1)

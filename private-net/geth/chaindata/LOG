@@ -131,3 +131,27 @@
 12:56:19.097290 db@open done T·121.101082ms
 13:19:00.760286 db@close closing
 13:19:00.760409 db@close done T·121.881µs
+=============== Jan 19, 2022 (JST) ===============
+00:05:46.934079 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+00:05:46.936980 version@stat F·[1 1] S·20KiB[6KiB 14KiB] Sc·[0.25 0.00]
+00:05:46.937042 db@open opening
+00:05:46.937232 journal@recovery F·1
+00:05:46.945928 journal@recovery recovering @29
+00:05:46.972923 memdb@flush created L0@31 N·8 S·2KiB "Sna..tor,v455":"unc..own,v450"
+00:05:46.977720 version@stat F·[2 1] S·23KiB[8KiB 14KiB] Sc·[0.50 0.00]
+00:05:47.108248 db@janitor F·5 G·0
+00:05:47.108886 db@open done T·171.785286ms
+00:15:51.582781 db@close closing
+00:15:51.582980 db@close done T·197.703µs
+=============== Jan 19, 2022 (JST) ===============
+00:15:52.987559 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+00:15:52.988554 version@stat F·[2 1] S·23KiB[8KiB 14KiB] Sc·[0.50 0.00]
+00:15:52.988604 db@open opening
+00:15:52.988751 journal@recovery F·1
+00:15:52.991804 journal@recovery recovering @32
+00:15:53.014011 memdb@flush created L0@34 N·84 S·6KiB "$\x94\xda..\xbbf\x00,v539":"\xd3-\xf7..\x90\xbb\x14,v541"
+00:15:53.016772 version@stat F·[3 1] S·29KiB[15KiB 14KiB] Sc·[0.75 0.00]
+00:15:53.110388 db@janitor F·6 G·0
+00:15:53.110463 db@open done T·121.841226ms
+00:20:32.243417 db@close closing
+00:20:32.243626 db@close done T·206.385µs
