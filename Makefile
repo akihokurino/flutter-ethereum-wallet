@@ -4,5 +4,5 @@ ROOT := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 init-private-net:
 	geth --datadir ./private-net/ init ./private-net/genesis.json
 
-private-net-console:
+console-private-net:
 	geth --networkid "10" --port 8545 --http --nodiscover --datadir ./private-net/ --allow-insecure-unlock console
