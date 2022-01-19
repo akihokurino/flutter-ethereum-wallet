@@ -44,7 +44,7 @@ class RootPage extends HookWidget {
       customWidget: CustomTabBar(
         items: [
           PersistentBottomNavBarItem(
-            icon: const Icon(Icons.home),
+            icon: const Icon(Icons.account_balance_wallet),
             title: "ホーム",
             activeColorPrimary: ThemeData().primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,

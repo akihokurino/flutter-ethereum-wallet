@@ -2,13 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_ethereum_wallet/infra/datastore.dart';
 import 'package:flutter_ethereum_wallet/ui/root.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
-
-const walletPrivateKey = "wallet-private-key";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,10 +35,13 @@ void main() async {
 }
 
 Future<void> _initWallet() async {
-  final prefs = await SharedPreferences.getInstance();
-  final rawPrivateKey = prefs.getString(walletPrivateKey) ?? "";
+  final rawPrivateKey = await DataStore().getPrivateKey();
+  final EthPrivateKey credentials;
   if (rawPrivateKey.isEmpty) {
-    final credentials = EthPrivateKey.createRandom(Random.secure());
-    prefs.setString(walletPrivateKey, credentials.privateKeyInt.toString());
+    credentials = EthPrivateKey.createRandom(Random.secure());
+    await DataStore().savePrivateKey(credentials.privateKeyInt.toString());
+  } else {
+    credentials = EthPrivateKey.fromInt(BigInt.parse(rawPrivateKey));
   }
+  debugPrint("secret: ${bytesToHex(credentials.privateKey)}");
 }

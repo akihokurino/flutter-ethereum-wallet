@@ -56,7 +56,7 @@ class HomePage extends HookConsumerWidget {
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.CENTER,
               timeInSecForIosWeb: 1,
-              backgroundColor: Colors.red,
+              backgroundColor: ThemeData().primaryColor,
               textColor: Colors.white,
               fontSize: 16.0);
         },
@@ -68,7 +68,7 @@ class HomePage extends HookConsumerWidget {
       height: 100.0,
       margin: const EdgeInsets.fromLTRB(10, 20, 10, 20),
       child: Card(
-        color: ThemeData().navigationBarTheme.backgroundColor,
+        color: Colors.green,
         child: Center(
           child: Text(
             "${state.balance.getValueInUnit(EtherUnit.ether).toStringAsFixed(3)} Ether",
@@ -93,7 +93,7 @@ class HomePage extends HookConsumerWidget {
           Container(
             margin: EdgeInsets.zero,
             child: TextFieldView(
-              label: "送金額（Ether）",
+              label: "取引額（Ether）",
               value: sendEth.value.toString(),
               inputType: TextInputType.number,
               onChange: (val) {
@@ -104,7 +104,7 @@ class HomePage extends HookConsumerWidget {
           Container(
             margin: EdgeInsets.zero,
             child: TextFieldView(
-              label: "送金先",
+              label: "宛先",
               value: sendAddress.value,
               inputType: TextInputType.emailAddress,
               onChange: (val) {
