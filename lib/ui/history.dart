@@ -119,7 +119,7 @@ class HistoryPage extends HookConsumerWidget {
         SizedBox(
           width: MediaQuery.of(context).size.width - 60,
           child: Card(
-            color: const Color.fromRGBO(219, 154, 4, 0.6),
+            color: const Color.fromRGBO(219, 154, 4, 0.8352941176470589),
             child: Container(
               padding: const EdgeInsets.all(10),
               child: Column(
