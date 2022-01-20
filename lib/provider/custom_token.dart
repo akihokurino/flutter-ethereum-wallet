@@ -8,8 +8,7 @@ import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 
 final _networkUrl = dotenv.env["NETWORK_URL"]!;
-final _chainId = dotenv.env["CHAIN_ID"]!;
-final _contractAddress =
+final customTokenAddress =
     EthereumAddress.fromHex("0x803c6922F39792Bd17DE55Db7eFcd7b4a206ebA4");
 
 class _Provider extends StateNotifier<_State> {
@@ -23,7 +22,7 @@ class _Provider extends StateNotifier<_State> {
       final credentials = EthPrivateKey.fromInt(BigInt.parse(rawPrivateKey));
       final ethClient = Web3Client(_networkUrl, Client());
       final address = credentials.address;
-      final token = Erc20(address: _contractAddress, client: ethClient);
+      final token = Erc20(address: customTokenAddress, client: ethClient);
       final balance = await token.balanceOf(address);
       await ethClient.dispose();
 
@@ -42,7 +41,7 @@ class _Provider extends StateNotifier<_State> {
       final credentials = EthPrivateKey.fromInt(BigInt.parse(rawPrivateKey));
       final ethClient = Web3Client(_networkUrl, Client());
       final address = credentials.address;
-      final token = Erc20(address: _contractAddress, client: ethClient);
+      final token = Erc20(address: customTokenAddress, client: ethClient);
       final balance = await token.balanceOf(address);
       await ethClient.dispose();
 
@@ -64,7 +63,7 @@ class _Provider extends StateNotifier<_State> {
       final credentials = EthPrivateKey.fromInt(BigInt.parse(rawPrivateKey));
       final ethClient = Web3Client(_networkUrl, Client());
       final address = credentials.address;
-      final token = Erc20(address: _contractAddress, client: ethClient);
+      final token = Erc20(address: customTokenAddress, client: ethClient);
       final hash = await token.transfer(
           EthereumAddress.fromHex(to), BigInt.from(value),
           credentials: credentials,

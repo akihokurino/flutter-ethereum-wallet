@@ -1,3 +1,4 @@
+import 'package:flutter_ethereum_wallet/provider/custom_token.dart';
 import 'package:intl/intl.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -26,6 +27,7 @@ class Tx {
   final String gas;
   final String gasPrice;
   final String gasUsed;
+  final String isError;
 
   Tx({
     required this.blockNumber,
@@ -38,6 +40,7 @@ class Tx {
     required this.gas,
     required this.gasPrice,
     required this.gasUsed,
+    required this.isError,
   });
 
   factory Tx.fromJson(Map<String, dynamic>? parsedJson) {
@@ -51,7 +54,8 @@ class Tx {
         value: parsedJson?["value"],
         gas: parsedJson?["gas"],
         gasPrice: parsedJson?["gasPrice"],
-        gasUsed: parsedJson?["gasUsed"]);
+        gasUsed: parsedJson?["gasUsed"],
+        isError: parsedJson?["isError"]);
   }
 
   String valueEth() {
@@ -64,5 +68,17 @@ class Tx {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
     String time = DateFormat("yyyy/MM/dd HH:mm").format(date).toString();
     return time;
+  }
+
+  bool error() {
+    return isError == "1";
+  }
+
+  bool isMine(EthereumAddress? address) {
+    return EthereumAddress.fromHex(from).hex == address?.hex;
+  }
+
+  bool isSendToContract() {
+    return EthereumAddress.fromHex(to).hex == customTokenAddress.hex;
   }
 }

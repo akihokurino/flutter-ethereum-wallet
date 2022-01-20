@@ -32,7 +32,7 @@ class HistoryPage extends HookConsumerWidget {
       margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       child: Column(
         children: state.transactions.map((tx) {
-          if (tx.from == state.address!.hex) {
+          if (tx.isMine(state.address)) {
             return outHistory(context, tx);
           } else {
             return inHistory(context, tx);
@@ -79,7 +79,9 @@ class HistoryPage extends HookConsumerWidget {
         SizedBox(
           width: MediaQuery.of(context).size.width - 60,
           child: Card(
-            color: const Color.fromRGBO(12, 248, 208, 0.5),
+            color: transaction.error()
+                ? Colors.red
+                : const Color.fromRGBO(12, 248, 208, 0.5),
             child: Container(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -119,7 +121,9 @@ class HistoryPage extends HookConsumerWidget {
         SizedBox(
           width: MediaQuery.of(context).size.width - 60,
           child: Card(
-            color: const Color.fromRGBO(219, 154, 4, 0.8352941176470589),
+            color: transaction.error()
+                ? Colors.red
+                : const Color.fromRGBO(219, 154, 4, 0.8352941176470589),
             child: Container(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -130,14 +134,21 @@ class HistoryPage extends HookConsumerWidget {
                     margin: const EdgeInsets.only(bottom: 10),
                     child: Text("トランザクションハッシュ: \n${transaction.hash}"),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    child: Text("送り先: \n${transaction.to}"),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    child: Text("総額: ${transaction.valueEth()} Ether"),
-                  ),
+                  !transaction.isSendToContract()
+                      ? Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: Text("送り先: \n${transaction.to}"),
+                        )
+                      : Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: const Text("コントラクト呼び出し"),
+                        ),
+                  !transaction.isSendToContract()
+                      ? Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: Text("総額: ${transaction.valueEth()} Ether"),
+                        )
+                      : Container(),
                   Container(
                     margin: const EdgeInsets.only(bottom: 0),
                     child: Text("日付: ${transaction.displayDate()}"),
