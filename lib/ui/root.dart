@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ethereum_wallet/component/tabbar.dart';
 import 'package:flutter_ethereum_wallet/ui/history.dart';
 import 'package:flutter_ethereum_wallet/ui/home.dart';
+import 'package:flutter_ethereum_wallet/ui/select_token.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:uuid/uuid.dart';
@@ -18,6 +19,7 @@ class RootPage extends HookWidget {
 
   late final PersistentTabController _tabController;
   final List<GlobalKey<NavigatorState>> globalKeys = [
+    GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
   ];
@@ -38,7 +40,8 @@ class RootPage extends HookWidget {
       controller: _tabController,
       screens: [
         HomePage(key: globalKeys[0]),
-        HistoryPage(key: globalKeys[1]),
+        SelectTokenPage(key: globalKeys[1]),
+        HistoryPage(key: globalKeys[2]),
       ],
       itemCount: globalKeys.length,
       customWidget: CustomTabBar(
@@ -46,6 +49,12 @@ class RootPage extends HookWidget {
           PersistentBottomNavBarItem(
             icon: const Icon(Icons.account_balance_wallet),
             title: "ホーム",
+            activeColorPrimary: ThemeData().primaryColor,
+            inactiveColorPrimary: CupertinoColors.systemGrey,
+          ),
+          PersistentBottomNavBarItem(
+            icon: const Icon(Icons.folder),
+            title: "トークン",
             activeColorPrimary: ThemeData().primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,
           ),

@@ -3,22 +3,26 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ethereum_wallet/component/button.dart';
 import 'package:flutter_ethereum_wallet/component/dialog.dart';
 import 'package:flutter_ethereum_wallet/component/text_field.dart';
-import 'package:flutter_ethereum_wallet/provider/home.dart';
+import 'package:flutter_ethereum_wallet/provider/custom_token.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_hud/flutter_hud.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:uuid/uuid.dart';
 
-class HomePage extends HookConsumerWidget {
-  const HomePage({Key? key}) : super(key: key);
+class CustomTokenPage extends HookConsumerWidget {
+  static CustomTokenPage withKey() {
+    return CustomTokenPage(key: Key(const Uuid().v4()));
+  }
+
+  const CustomTokenPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(homeProvider);
-    final action = ref.read(homeProvider.notifier);
+    final state = ref.watch(customTokenProvider);
+    final action = ref.read(customTokenProvider.notifier);
 
-    final sendEth = useState(0.0);
+    final sendToken = useState(0);
     final sendAddress = useState("");
 
     useEffect(() {
@@ -71,7 +75,7 @@ class HomePage extends HookConsumerWidget {
         color: Colors.green,
         child: Center(
           child: Text(
-            "${state.balance.getValueInUnit(EtherUnit.ether).toStringAsFixed(3)} Ether",
+            "${state.balance} CMTN",
             style: const TextStyle(fontSize: 30),
           ),
         ),
@@ -93,11 +97,11 @@ class HomePage extends HookConsumerWidget {
           Container(
             margin: EdgeInsets.zero,
             child: TextFieldView(
-              label: "取引額（Ether）",
-              value: sendEth.value.toString(),
+              label: "取引額（CMTN）",
+              value: sendToken.value.toString(),
               inputType: TextInputType.number,
               onChange: (val) {
-                sendEth.value = double.parse(val);
+                sendToken.value = int.parse(val);
               },
             ),
           ),
@@ -119,14 +123,14 @@ class HomePage extends HookConsumerWidget {
                 textColor: Colors.white,
                 backgroundColor: Colors.blue,
                 onClick: () async {
-                  final err =
-                      await action.sendEther(sendEth.value, sendAddress.value);
+                  final err = await action.sendToken(
+                      sendToken.value, sendAddress.value);
                   if (err != null) {
                     AppDialog().showErrorAlert(context, err);
                     return;
                   }
 
-                  sendEth.value = 0.0;
+                  sendToken.value = 0;
                   sendAddress.value = "";
                 }),
           )
@@ -138,7 +142,7 @@ class HomePage extends HookConsumerWidget {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: AppBar(
-          title: const Text("ホーム"),
+          title: const Text("CustomToken"),
           centerTitle: true,
         ),
       ),

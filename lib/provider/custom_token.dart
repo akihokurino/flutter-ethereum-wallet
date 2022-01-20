@@ -4,10 +4,13 @@ import 'package:flutter_ethereum_wallet/infra/datastore.dart';
 import 'package:flutter_ethereum_wallet/provider/error.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 
 final _networkUrl = dotenv.env["NETWORK_URL"]!;
 final _chainId = dotenv.env["CHAIN_ID"]!;
+final _contractAddress =
+    EthereumAddress.fromHex("0x803c6922F39792Bd17DE55Db7eFcd7b4a206ebA4");
 
 class _Provider extends StateNotifier<_State> {
   _Provider() : super(_State.init());
@@ -20,11 +23,12 @@ class _Provider extends StateNotifier<_State> {
       final credentials = EthPrivateKey.fromInt(BigInt.parse(rawPrivateKey));
       final ethClient = Web3Client(_networkUrl, Client());
       final address = credentials.address;
-      final balance = await ethClient.getBalance(address);
+      final token = Erc20(address: _contractAddress, client: ethClient);
+      final balance = await token.balanceOf(address);
       await ethClient.dispose();
 
       state = state.setAddress(address);
-      state = state.setBalance(balance);
+      state = state.setBalance(balance.toInt());
     } catch (e) {
       return AppError("エラーが発生しました");
     } finally {
@@ -38,17 +42,18 @@ class _Provider extends StateNotifier<_State> {
       final credentials = EthPrivateKey.fromInt(BigInt.parse(rawPrivateKey));
       final ethClient = Web3Client(_networkUrl, Client());
       final address = credentials.address;
-      final balance = await ethClient.getBalance(address);
+      final token = Erc20(address: _contractAddress, client: ethClient);
+      final balance = await token.balanceOf(address);
       await ethClient.dispose();
 
-      state = state.setBalance(balance);
+      state = state.setBalance(balance.toInt());
     } catch (e) {
       return AppError("エラーが発生しました");
     }
   }
 
-  Future<AppError?> sendEther(double ether, String to) async {
-    if (ether <= 0.0 || to.isEmpty) {
+  Future<AppError?> sendToken(int value, String to) async {
+    if (value <= 0 || to.isEmpty) {
       return AppError("入力が不正です");
     }
 
@@ -59,14 +64,15 @@ class _Provider extends StateNotifier<_State> {
       final credentials = EthPrivateKey.fromInt(BigInt.parse(rawPrivateKey));
       final ethClient = Web3Client(_networkUrl, Client());
       final address = credentials.address;
-      final wei = BigInt.from(ether * 1e+18);
-      final hash = await ethClient.sendTransaction(
-          credentials,
-          Transaction(
+      final token = Erc20(address: _contractAddress, client: ethClient);
+      final hash = await token.transfer(
+          EthereumAddress.fromHex(to), BigInt.from(value),
+          credentials: credentials,
+          transaction: Transaction(
               from: address,
-              to: EthereumAddress.fromHex(to),
-              value: EtherAmount.fromUnitAndValue(EtherUnit.wei, wei)),
-          chainId: int.parse(_chainId));
+              maxGas: 5500000,
+              gasPrice:
+                  EtherAmount.fromUnitAndValue(EtherUnit.wei, 35000000000)));
       await ethClient.dispose();
 
       debugPrint("create tx: $hash");
@@ -81,7 +87,7 @@ class _Provider extends StateNotifier<_State> {
 class _State {
   final bool shouldShowHUD;
   final EthereumAddress? address;
-  final EtherAmount balance;
+  final int balance;
 
   _State(
       {required this.shouldShowHUD,
@@ -89,8 +95,7 @@ class _State {
       required this.balance});
 
   static _State init() {
-    return _State(
-        shouldShowHUD: false, address: null, balance: EtherAmount.zero());
+    return _State(shouldShowHUD: false, address: null, balance: 0);
   }
 
   _State setShouldShowHUD(bool should) {
@@ -102,11 +107,11 @@ class _State {
         shouldShowHUD: shouldShowHUD, address: address, balance: balance);
   }
 
-  _State setBalance(EtherAmount balance) {
+  _State setBalance(int balance) {
     return _State(
         shouldShowHUD: shouldShowHUD, address: address, balance: balance);
   }
 }
 
-final homeProvider =
+final customTokenProvider =
     StateNotifierProvider<_Provider, _State>((_) => _Provider());
