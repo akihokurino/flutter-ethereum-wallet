@@ -11,7 +11,7 @@
 - faucet ( https://faucet.ropsten.be/ )
 - geth ( https://geth.ethereum.org/ )
 
-## Dones
+## Done
 
 - connect private net by geth
 - connect test net by ropsten + infura
@@ -21,6 +21,9 @@
 - get erc20 token balance by my smart contract
 - send erc20 token by my smart contract
 - fetch all transactions related by my address
+
+## ERC20
+https://github.com/akihokurino/ethereum-erc20-token
 
 ## Images
 
