@@ -6,10 +6,14 @@
 - flutter_hooks（ https://github.com/rrousselGit/flutter_hooks ）
 - ethereum
 - ropsten
-- infura ( https://infura.io/ )
 - web3dart ( https://github.com/simolus3/web3dart )
 - faucet ( https://faucet.ropsten.be/ )
 - geth ( https://geth.ethereum.org/ )
+- truffle v5.4.28 ( https://trufflesuite.com/ )
+- solidity v0.8.11
+- open zeppelin ( https://openzeppelin.com/ )
+- infura ( https://infura.io/ )
+- metamask
 
 ## Done
 
@@ -21,9 +25,6 @@
 - get erc20 token balance by my smart contract
 - send erc20 token by my smart contract
 - fetch all transactions related by my address
-
-## ERC20
-https://github.com/akihokurino/ethereum-erc20-token
 
 ## Images
 
