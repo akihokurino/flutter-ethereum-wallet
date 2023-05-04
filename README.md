@@ -1,4 +1,4 @@
-## Specs
+## Used, Dependency
 
 - flutter2
 - dart2.15
@@ -15,7 +15,7 @@
 - infura ( https://infura.io/ )
 - metamask
 
-## Done
+## Support
 
 - connect private net by geth
 - connect test net by ropsten + infura
